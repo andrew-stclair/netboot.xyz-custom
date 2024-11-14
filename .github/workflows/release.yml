@@ -1,0 +1,49 @@
+name: Release
+
+on:
+  push:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: build
+        run: |
+          sudo ./mk-initrd.sh
+          sudo ./mk-bzimage.sh
+      - name: Build Changelog
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          prerelease: false
+          release_name: ${{ github.ref }}
+          tag_name: ${{ github.ref }}
+          body: ${{steps.github_release.outputs.changelog}}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: upload initial ram disk
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: initrd.gz
+          asset_name: initrd.gz
+          asset_content_type: application/gzip
+      - name: upload kernel
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: bzimage
+          asset_name: bzimage
+          asset_content_type: application/octet-stream

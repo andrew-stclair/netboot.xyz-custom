@@ -17,7 +17,7 @@ goto custom_exit
 :custom_kernel
 kernel http://path.to/vmlinuz
 initrd http://path.to/initrd
-imgargs vmlinuz put_kernel_img_args_here
+imgargs rootwait rw
 boot || goto custom_exit
 
 :custom_iso
