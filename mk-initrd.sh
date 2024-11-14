@@ -3,8 +3,16 @@
 # Deps:
 # cpio
 
+# Make sure we are root
+# the setuid bit runs the program as the user who owns the program
+# therefore we want everything in the filesystem to be owned by root
+if [ "$EUID" -ne 0 ]
+  then echo "Please run as root"
+  exit
+fi
+
 WORKDIR=$(pwd)
-BUSYBOX_INITRD_DIR="${WORKDIR}/busybox-initrd"
+BUSYBOX_INITRD_DIR="${WORKDIR}/busybox.initrd"
 BUSYBOX_REPO="${WORKDIR}/busybox"
 
 # Mount it so that we can populate
@@ -18,28 +26,13 @@ cp ${WORKDIR}/busybox-config .config
 make -j$(nproc)
 make CONFIG_PREFIX=${BUSYBOX_INITRD_DIR} install
 cd ${WORKDIR}
-chmod +s ${BUSYBOX_INITRD_DIR}/bin/busybox
+chmod +sx ${BUSYBOX_INITRD_DIR}/bin/busybox
 
-# Create the init file
-echo << EOF > ${BUSYBOX_INITRD_DIR}/init
-#!/bin/sh
-
-mount -t devtmpfs devtmpfs /dev
-mount -t proc none /proc
-mount -t sysfs none /sys
-
-cat <<!
-
-Welcome to BusyBox Linux!
-Boot took $(cut -d' ' -f1 /proc/uptime) seconds
-
-!
-exec /bin/sh
-EOF
-
-chmod +x ${BUSYBOX_INITRD_DIR}/init
+# Add includes
+cp -r ${WORKDIR}/busybox.includes/* ${BUSYBOX_INITRD_DIR}/.
 
 cd ${BUSYBOX_INITRD_DIR}
+[ -f "${WORKDIR}/initrd.gz" ] && rm -rf "${WORKDIR}/initrd.gz"
 find . -print0 | cpio --null -ov --format=newc | gzip -9 > ${WORKDIR}/initrd.gz
 cd ${WORKDIR}
 rm -rf ${BUSYBOX_INITRD_DIR}
