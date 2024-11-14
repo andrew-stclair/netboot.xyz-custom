@@ -1,0 +1,30 @@
+#!ipxe
+###
+### netboot.xyz-custom menu
+###
+
+:custom
+clear custom_choice
+menu This is a Test Menu
+item --gap This is the first sub menu
+item custom_kernel ${space} Custom Debian Image (Kernel+initrd)
+item custom_iso ${space} Loading an ISO (ISO)
+choose custom_choice || goto custom_exit
+echo ${cls}
+goto ${custom_choice}
+goto custom_exit
+
+:custom_kernel
+kernel http://path.to/vmlinuz
+initrd http://path.to/initrd
+imgargs vmlinuz put_kernel_img_args_here
+boot || goto custom_exit
+
+:custom_iso
+kernel https://boot.netboot.xyz/memdisk raw iso
+initrd http://path.to/iso
+boot || goto custom_exit
+
+:custom_exit
+chain utils.ipxe
+exit
