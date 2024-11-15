@@ -2,6 +2,8 @@ name: Release
 
 on:
   push:
+    tags:
+      - v*
 
 jobs:
   release:
@@ -20,11 +22,11 @@ jobs:
         run: |
           sudo ./mk-initrd.sh
           sudo ./mk-bzimage.sh
-      # - name: Build Changelog
-      #   id: github_release
-      #   uses: mikepenz/release-changelog-builder-action@v5
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build Changelog
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: release
         uses: actions/create-release@v1
         id: create_release
@@ -33,7 +35,7 @@ jobs:
           prerelease: false
           release_name: ${{ github.ref }}
           tag_name: ${{ github.ref }}
-          body: "Did stuff"
+          body: ${{ steps.github_release.outputs.changelog }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: upload initial ram disk
