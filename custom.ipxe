@@ -7,17 +7,16 @@
 clear custom_choice
 menu This is a Test Menu
 item --gap This is the first sub menu
-item custom_kernel ${space} Custom Debian Image (Kernel+initrd)
+item custom_busybox ${space} Custom BusyBox
 item custom_iso ${space} Loading an ISO (ISO)
 choose custom_choice || goto custom_exit
 echo ${cls}
 goto ${custom_choice}
 goto custom_exit
 
-:custom_kernel
-kernel http://path.to/vmlinuz
-initrd http://path.to/initrd
-imgargs rootwait rw
+:custom_busybox
+kernel https://github.com/andrew-stclair/netboot.xyz-custom/releases/latest/download/bzimage rootwait rw
+initrd https://github.com/andrew-stclair/netboot.xyz-custom/releases/latest/download/initrd.gz
 boot || goto custom_exit
 
 :custom_iso
