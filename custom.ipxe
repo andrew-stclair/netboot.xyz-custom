@@ -15,7 +15,7 @@ goto ${custom_choice}
 goto custom_exit
 
 :custom_busybox
-kernel https://github.com/andrew-stclair/netboot.xyz-custom/releases/latest/download/bzimage rootwait rw
+kernel https://github.com/andrew-stclair/netboot.xyz-custom/releases/latest/download/bzimage rootwait rw console=ttyS0
 initrd https://github.com/andrew-stclair/netboot.xyz-custom/releases/latest/download/initrd.gz
 boot || goto custom_exit
 
