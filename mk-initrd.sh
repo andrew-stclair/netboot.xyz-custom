@@ -32,7 +32,7 @@ chmod +sx ${BUSYBOX_INITRD_DIR}/bin/busybox
 cp -r ${WORKDIR}/busybox.includes/* ${BUSYBOX_INITRD_DIR}/.
 
 cd ${BUSYBOX_INITRD_DIR}
-[ -f "${WORKDIR}/initrd.gz" ] && rm -rf "${WORKDIR}/initrd.gz"
-find . -print0 | cpio --null -ov --format=newc | gzip -9 > ${WORKDIR}/initrd.gz
+[ -f "${WORKDIR}/initrd" ] && rm -rf "${WORKDIR}/initrd"
+find . -print0 | cpio --null -ov --format=newc > ${WORKDIR}/initrd
 cd ${WORKDIR}
 rm -rf ${BUSYBOX_INITRD_DIR}

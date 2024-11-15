@@ -44,8 +44,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: initrd.gz
-          asset_name: initrd.gz
+          asset_path: initrd
+          asset_name: initrd
           asset_content_type: application/gzip
       - name: upload kernel
         uses: actions/upload-release-asset@v1

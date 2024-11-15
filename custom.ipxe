@@ -16,7 +16,7 @@ goto custom_exit
 
 :custom_busybox
 kernel https://github.com/andrew-stclair/netboot.xyz-custom/releases/latest/download/bzimage rootwait rw initrd=initrd.magic ${cmdline}
-initrd https://github.com/andrew-stclair/netboot.xyz-custom/releases/latest/download/initrd.gz
+initrd https://github.com/andrew-stclair/netboot.xyz-custom/releases/latest/download/initrd
 boot || goto custom_exit
 
 :custom_iso
